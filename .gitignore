@@ -5,7 +5,9 @@ env/
 
 # Python
 __pycache__/
+pycache/ 
 *.pyc
+*.pt
 
 # Données (trop volumineuses / régénérables localement)
 classification/raw_kaggle_download/
@@ -15,3 +17,9 @@ classification/checkpoints/
 
 # Archives
 *.zip
+
+dataset/
+yolo_dataset/
+dataset_grouped/ 
+checkpoints/ 
+.DS_Store
