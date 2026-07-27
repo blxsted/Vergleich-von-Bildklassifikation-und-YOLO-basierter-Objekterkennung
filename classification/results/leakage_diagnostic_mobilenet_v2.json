@@ -1,0 +1,23 @@
+{
+  "note": "Data-leakage diagnostic: training + evaluation on the date-grouped split (leakage-free)",
+  "model_name": "mobilenet_v2",
+  "best_val_acc": 0.9966666666666667,
+  "epochs_trained": 10,
+  "training_time_seconds": 2404.5,
+  "test_accuracy": 0.91,
+  "test_precision": 0.8534,
+  "test_recall": 0.99,
+  "test_f1": 0.9167,
+  "confusion_matrix": [
+    [
+      249,
+      51
+    ],
+    [
+      3,
+      297
+    ]
+  ],
+  "n_test_samples": 600,
+  "comparison_original_leaky_test_accuracy": 0.9735
+}

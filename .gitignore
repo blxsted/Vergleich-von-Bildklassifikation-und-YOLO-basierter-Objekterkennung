@@ -1,0 +1,17 @@
+# Environnements virtuels
+venv/
+env/
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+
+# Données (trop volumineuses / régénérables localement)
+classification/raw_kaggle_download/
+classification/dataset/
+classification/dataset_grouped/
+classification/checkpoints/
+
+# Archives
+*.zip

@@ -1,0 +1,23 @@
+{
+  "note": "Data-leakage diagnostic: training + evaluation on the date-grouped split (leakage-free)",
+  "model_name": "resnet18",
+  "best_val_acc": 0.995,
+  "epochs_trained": 10,
+  "training_time_seconds": 2585.0,
+  "test_accuracy": 0.905,
+  "test_precision": 0.8501,
+  "test_recall": 0.9833,
+  "test_f1": 0.9119,
+  "confusion_matrix": [
+    [
+      248,
+      52
+    ],
+    [
+      5,
+      295
+    ]
+  ],
+  "n_test_samples": 600,
+  "comparison_original_leaky_test_accuracy": 0.969
+}

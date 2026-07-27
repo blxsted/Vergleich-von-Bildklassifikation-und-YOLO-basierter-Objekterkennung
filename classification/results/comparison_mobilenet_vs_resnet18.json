@@ -1,0 +1,24 @@
+[
+  {
+    "model": "mobilenet_v2",
+    "test_accuracy": 0.9735,
+    "test_precision": 0.9549,
+    "test_recall": 0.994,
+    "test_f1": 0.974,
+    "trainable_parameters": 2226434,
+    "training_time_min": 184.4,
+    "epochs_trained": 16,
+    "inference_time_ms_per_image": 19.672
+  },
+  {
+    "model": "resnet18",
+    "test_accuracy": 0.969,
+    "test_precision": 0.9458,
+    "test_recall": 0.995,
+    "test_f1": 0.9698,
+    "trainable_parameters": 11177538,
+    "training_time_min": 100.0,
+    "epochs_trained": 8,
+    "inference_time_ms_per_image": 23.887
+  }
+]

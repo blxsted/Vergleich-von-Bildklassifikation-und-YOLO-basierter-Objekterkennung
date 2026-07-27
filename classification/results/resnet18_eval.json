@@ -1,0 +1,99 @@
+{
+  "model_name": "resnet18",
+  "test_accuracy": 0.969,
+  "test_precision": 0.9458,
+  "test_recall": 0.995,
+  "test_f1": 0.9698,
+  "confusion_matrix": {
+    "labels": [
+      "empty",
+      "occupied"
+    ],
+    "matrix": [
+      [
+        943,
+        57
+      ],
+      [
+        5,
+        995
+      ]
+    ]
+  },
+  "error_examples": {
+    "false_positives": [
+      {
+        "path": "dataset/test\\empty\\0_61.jpg",
+        "true_label": "empty",
+        "predicted_label": "occupied",
+        "confidence": 0.8998
+      },
+      {
+        "path": "dataset/test\\empty\\0_69.jpg",
+        "true_label": "empty",
+        "predicted_label": "occupied",
+        "confidence": 0.7569
+      },
+      {
+        "path": "dataset/test\\empty\\0_77.jpg",
+        "true_label": "empty",
+        "predicted_label": "occupied",
+        "confidence": 0.7844
+      },
+      {
+        "path": "dataset/test\\empty\\0_86.jpg",
+        "true_label": "empty",
+        "predicted_label": "occupied",
+        "confidence": 0.9855
+      },
+      {
+        "path": "dataset/test\\empty\\1028_58255.jpg",
+        "true_label": "empty",
+        "predicted_label": "occupied",
+        "confidence": 0.8901
+      }
+    ],
+    "false_negatives": [
+      {
+        "path": "dataset/test\\occupied\\109_6151.jpg",
+        "true_label": "occupied",
+        "predicted_label": "empty",
+        "confidence": 0.7911
+      },
+      {
+        "path": "dataset/test\\occupied\\596_35106.jpg",
+        "true_label": "occupied",
+        "predicted_label": "empty",
+        "confidence": 0.6849
+      },
+      {
+        "path": "dataset/test\\occupied\\649_38095.jpg",
+        "true_label": "occupied",
+        "predicted_label": "empty",
+        "confidence": 0.9724
+      },
+      {
+        "path": "dataset/test\\occupied\\818_47266.jpg",
+        "true_label": "occupied",
+        "predicted_label": "empty",
+        "confidence": 0.9975
+      },
+      {
+        "path": "dataset/test\\occupied\\996_56646.jpg",
+        "true_label": "occupied",
+        "predicted_label": "empty",
+        "confidence": 0.9986
+      }
+    ]
+  },
+  "metrics_per_weather": {
+    "unknown": {
+      "accuracy": 0.969,
+      "precision": 0.9458,
+      "recall": 0.995,
+      "f1": 0.9698,
+      "n_samples": 2000
+    }
+  },
+  "n_test_samples": 2000
+}

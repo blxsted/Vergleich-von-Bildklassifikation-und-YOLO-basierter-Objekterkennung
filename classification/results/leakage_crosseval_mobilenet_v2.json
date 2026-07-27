@@ -1,0 +1,15 @@
+{
+  "note": "Data-leakage diagnostic: official checkpoint (trained on the original contaminated split) evaluated on the leakage-free test set (dataset_grouped/test, dates never seen in train)",
+  "model_name": "mobilenet_v2",
+  "checkpoint": "checkpoints/mobilenet_v2_best.pt",
+  "test_accuracy": 0.9133,
+  "test_precision": 0.8523,
+  "test_recall": 1.0,
+  "test_f1": 0.9202,
+  "confusion_matrix": [
+    [248, 52],
+    [0, 300]
+  ],
+  "n_test_samples": 600,
+  "comparison_original_leaky_test_accuracy": 0.9735
+}
