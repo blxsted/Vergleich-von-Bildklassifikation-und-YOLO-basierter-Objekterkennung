@@ -40,7 +40,7 @@ print(f"YOLO mAP@0.5: {map50:.1%}")
 print(f"Improvement:  +{(map50*100 - baseline*100):.1f}%")
 
 # Speichern
-with open("../results/yolo_eval.json", 'w') as f:
+with open("./results/yolo_eval.json", 'w') as f:
     json.dump({
         "map50": float(map50),
         "map": float(map_val),
@@ -49,4 +49,4 @@ with open("../results/yolo_eval.json", 'w') as f:
         "device": device
     }, f, indent=2)
 
-print("\n✓ Results saved to ../results/yolo_eval.json")
+print("\n✓ Results saved to ./results/yolo_eval.json")
