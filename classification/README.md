@@ -10,14 +10,26 @@ experiment E2 (YOLO object detection, see the rest of this repository).
 The source dataset ([PKLot via Kaggle/Roboflow](https://public.roboflow.ai/object-detection/pklot))
 provides **full-scene images** (640×640) with **COCO** annotations — one
 bounding box per parking space, category `space-empty` or
-`space-occupied`. It is not already cropped per space.
+`space-occupied`. It is not already cropped per space. The dataset itself
+is **not included in this repository** (too large, see `.gitignore`) — it
+must be downloaded once, locally, before running anything below.
 
-```
-raw_kaggle_download/archive/
-├── train/            scene images + _annotations.coco.json
-├── valid/
-└── test/
-```
+### Getting the data
+
+1. Download the zip from Kaggle: **[PKLot Dataset](https://www.kaggle.com/datasets/ammarnassanalhajali/pklot-dataset/data)**
+   (requires a free Kaggle account; use the page's "Download" button).
+2. Extract it so that its `train/`, `valid/`, `test/` folders (each
+   containing scene images + an `_annotations.coco.json`) end up under
+   `classification/raw_kaggle_download/archive/`:
+
+   ```
+   raw_kaggle_download/archive/
+   ├── train/            scene images + _annotations.coco.json
+   ├── valid/
+   └── test/
+   ```
+
+3. Continue with dataset preparation below (`prepare_dataset.py`).
 
 `prepare_dataset.py` crops each annotated bounding box into an individual
 image and builds the `ImageFolder` structure expected by the rest of the
