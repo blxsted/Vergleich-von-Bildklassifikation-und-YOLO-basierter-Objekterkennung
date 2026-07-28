@@ -1,0 +1,9 @@
+tensorflow 
+tensorflow-metal
+opencv-python 
+numpy 
+pandas 
+matplotlib 
+scikit-learn
+ultralytics
+tqdm
