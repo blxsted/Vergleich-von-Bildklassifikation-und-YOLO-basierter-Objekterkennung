@@ -38,7 +38,7 @@ Bestehende Arbeiten zeigen, dass Modelle zur Parkplatzbelegungserkennung häufig
 - **E2:** COCO-Annotationen wurden ins YOLO-Format konvertiert (normalisierte Center-Koordinaten), Szenenbilder blieben vollständig
 - Für E1 wurde auf CPU-tauglicher Größe sub-gesampelt (vollständig: ~712k Crops, zu groß)
 
-**⚠️ Kritischer Befund — Data Leakage im Original-Split:**
+**Kritischer Befund — Data Leakage im Original-Split:**
 Eine nachträgliche Prüfung ergab, dass der von Roboflow bereitgestellte train/val/test-Split PKLot-Aufnahmetage nicht sauber trennt: Da PKLot im 5-Minuten-Takt fotografiert, tauchten Bilder desselben Tages (gleiche Szene, gleiche geparkte Autos) sowohl im Train- als auch im Test-Set auf — 96 von 96 Test-Tagen kamen auch im Training vor. Dies führte zu einer künstlich überhöhten Test-Accuracy.
 
 **Korrektur:** Mit `classification/build_grouped_split.py` wurde ein neuer, nach Aufnahmetag gruppierter Split erstellt (`GroupShuffleSplit`, Gruppe = Datum), der garantiert, dass kein Tag gleichzeitig in zwei Splits vorkommt:
@@ -61,7 +61,7 @@ Nach der Data-Leakage-Diagnose für E1 wurde E2 (YOLO) mit derselben Korrekturst
 | val | 2.087 | 16 | YOLO (.txt labels) |
 | test | 1.623 | 15 | YOLO (.txt labels) |
 
-✅ **0% Tages-Überlap garantiert** — vollständig leakage-frei. Ergebnisse und Details siehe Abschnitt 4.2 und [yolo_without_leakage/README.md](yolo_without_leakage/README.md).
+**0% Tages-Überlap garantiert** — vollständig leakage-frei. Ergebnisse und Details siehe Abschnitt 4.2 und [yolo_without_leakage/README.md](yolo_without_leakage/README.md).
 
 ---
 
@@ -102,7 +102,7 @@ Nachdem für E1 Data Leakage erkannt wurde, wurde E2 mit derselben Korrekturstra
 | Hardware | Google Colab, T4 GPU |
 | Split-Methode | **GroupShuffleSplit nach Aufnahmetag** |
 | Trainingszeit | ~73 Minuten |
-| Status | ✅ Zero Data Leakage |
+| Status | Zero Data Leakage |
 
 ### 3.4 Pipeline
 
@@ -139,7 +139,7 @@ Detaillierte Setup- und Ausführungsanweisungen: [`classification/README.md`](cl
 | **Precision** | 99.77% | **99.776%** |
 | **Recall** | 99.77% | **99.769%** |
 | Inferenzzeit | ~30 ms (MPS) | ~30 ms (T4 GPU) |
-| Data Leakage | ⚠️ Wahrscheinlich | ✅ Ausgeschlossen |
+| Data Leakage | Wahrscheinlich | Ausgeschlossen |
 | Hardware | Mac M-Serie | Google Colab T4 |
 
 > **Befund:** Beide Splits erzielen nahezu identische Metriken (99.42% vs. 99.396% mAP@0.5). Dies deutet darauf hin, dass für die Aufgabe der Parkplatzbelegungserkennung in kompletten Szenenbildern die Tages-Korrelation weniger problematisch ist als für die Einzelplatz-Klassifikation (E1: −6.18 Punkte Leakage-Effekt).
