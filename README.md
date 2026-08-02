@@ -51,6 +51,18 @@ Eine nachträgliche Prüfung ergab, dass der von Roboflow bereitgestellte train/
 
 Alle in Abschnitt 4 berichteten E1-Ergebnisse basieren auf diesem bereinigten Split. Die vollständige Diagnose befindet sich in [Anhang A](#anhang-a-vollständige-leakage-diagnose).
 
+**E3 — Korrektur: YOLO mit GroupShuffleSplit (Zero Data Leakage)**
+
+Nach der Data-Leakage-Diagnose für E1 wurde E2 (YOLO) mit derselben Korrekturstrategie neu aufgeteilt. Mit `yolo_without_leakage/build_grouped_split_yolo.py` wurde ein nach Aufnahmetag gruppierter Split erstellt (`GroupShuffleSplit`, Gruppe = Datum):
+
+| Split | Bilder | Tage | Format |
+|---|---|---|---|
+| train | 8.706 | 69 | YOLO (.txt labels) |
+| val | 2.087 | 16 | YOLO (.txt labels) |
+| test | 1.623 | 15 | YOLO (.txt labels) |
+
+✅ **0% Tages-Überlap garantiert** — vollständig leakage-frei. Ergebnisse und Details siehe Abschnitt 4.2 und [yolo_without_leakage/README.md](yolo_without_leakage/README.md).
+
 ---
 
 ## 3. Vorgehen
@@ -77,7 +89,22 @@ Alle in Abschnitt 4 berichteten E1-Ergebnisse basieren auf diesem bereinigten Sp
 | Hardware | Mac M-Serie, MPS Acceleration |
 | Klassen | 1 (`car`) — Belegung wird aus erkannten Fahrzeugpositionen abgeleitet |
 
-### 3.3 Pipeline
+### 3.3 E3 — Objekterkennung (YOLOv8n mit GroupShuffleSplit)
+
+Nachdem für E1 Data Leakage erkannt wurde, wurde E2 mit derselben Korrekturstrategie (GroupShuffleSplit nach Aufnahmetag) neu trainiert.
+
+| Hyperparameter | Wert |
+|---|---|
+| Modell | YOLOv8n (Nano) |
+| Bildgröße | 640×640 |
+| Batch Size / Epochs | 8 / 20 (Early Stopping, Patience 10) |
+| Optimizer | SGD (YOLO-Standard) |
+| Hardware | Google Colab, T4 GPU |
+| Split-Methode | **GroupShuffleSplit nach Aufnahmetag** |
+| Trainingszeit | ~73 Minuten |
+| Status | ✅ Zero Data Leakage |
+
+### 3.4 Pipeline
 
 ```
 PKLot Datensatz → Vorverarbeitung (Crop / YOLO-Format) → Split-Korrektur
@@ -103,22 +130,24 @@ Detaillierte Setup- und Ausführungsanweisungen: [`classification/README.md`](cl
 ![Konfusionsmatrix MobileNetV2](figures/cm_mobilenet_clean.png)
 ![Konfusionsmatrix ResNet18](figures/cm_resnet18_clean.png)
 
-### 4.2 E2 — YOLOv8n
+### 4.2 E2 & E3 — YOLOv8n (Original vs. GroupShuffleSplit)
 
-| Metrik | Wert |
-|---|---|
-| mAP@0.5 | 99.42% |
-| mAP@0.5:0.95 | 93.51% |
-| Precision | 99.77% |
-| Recall | 99.77% |
-| Inferenzzeit | ~30 ms (MPS) |
+| Metrik | E2 (Roboflow Split) | E3 (GroupShuffleSplit) |
+|---|---|---|
+| **mAP@0.5** | 99.42% | **99.396%** |
+| **mAP@0.5:0.95** | 93.51% | **92.848%** |
+| **Precision** | 99.77% | **99.776%** |
+| **Recall** | 99.77% | **99.769%** |
+| Inferenzzeit | ~30 ms (MPS) | ~30 ms (T4 GPU) |
+| Data Leakage | ⚠️ Wahrscheinlich | ✅ Ausgeschlossen |
+| Hardware | Mac M-Serie | Google Colab T4 |
 
-> **Hinweis:** Eine Data-Leakage-Prüfung für YOLO (analog zu E1) ist in Arbeit — der aktuelle Split stammt möglicherweise ebenfalls aus dem unkorrigierten Roboflow-Export. Ergebnis folgt in einem Update dieses Abschnitts.
+> **Befund:** Beide Splits erzielen nahezu identische Metriken (99.42% vs. 99.396% mAP@0.5). Dies deutet darauf hin, dass für die Aufgabe der Parkplatzbelegungserkennung in kompletten Szenenbildern die Tages-Korrelation weniger problematisch ist als für die Einzelplatz-Klassifikation (E1: −6.18 Punkte Leakage-Effekt).
 
 ![Beispiel-Vorhersage YOLOv8n auf einer kompletten Parkplatzszene (Testset)](figures/yolo_real_prediction.jpg)
 ![Konfusionsmatrix YOLOv8n (Testset)](figures/yolo_confusion_matrix.png)
 
-*Echte Ausgaben des trainierten YOLOv8n-Modells (`yolo/runs/detect/yolov8n_parking/`): links eine Vorhersage auf einem vollständigen Szenenbild, rechts die Konfusionsmatrix auf dem Testset.*
+*Echte Ausgaben des trainierten YOLOv8n-Modells (`yolo/runs/detect/yolov8n_parking/` und `yolo_without_leakage/pklot_yolo_training/`): links eine Vorhersage auf einem vollständigen Szenenbild, rechts die Konfusionsmatrix auf dem Testset.*
 
 ### 4.3 Gesamtvergleich
 
@@ -142,6 +171,10 @@ Klassifikation ist ausreichend, wenn Parkplätze bereits zuverlässig zugeschnit
 
 Innerhalb von E1 bleibt MobileNetV2 auch auf dem bereinigten Split leicht vor ResNet18 (91.00 % vs. 90.50 %), bei 5× weniger Parametern und schnellerer Inferenz — ein für mobile/eingebettete Anwendungen relevanter Vorteil, auch wenn der Unterschied statistisch nicht signifikant ist.
 
+**E3 — Leakage-freie YOLO-Evaluierung:**
+
+Die GroupShuffleSplit-Korrektur für YOLO (E3) zeigt, dass die bereinigten und unbereinigten Splits nahezu identische Metriken erzielen (99.42% vs. 99.396% mAP@50). Dies deutet darauf hin, dass für die Erkennung von Fahrzeugen in kompletten Szenenbildern die zeitliche Korrelation zwischen Tagen weniger kritisch ist als für die Einzelplatz-Klassifikation (E1: −6.18 Punkte Leakage-Effekt). Mögliche Erklärung: YOLO trainiert auf räumlich-visuellen Mustern von Fahrzeugen über die gesamte Szene, während Klassifikation auf feinen Details einzelner zugeschnittener Parkplätze trainiert. Die statischen visuellen Charakteristiken eines Parkplatzes (Layout, Markierungen) ändern sich zwischen Tagen nicht merklich.
+
 ---
 
 ## 5. Poster und Slides
@@ -152,9 +185,9 @@ Innerhalb von E1 bleibt MobileNetV2 auch auf dem bereinigten Split leicht vor Re
 
 ## Limitationen
 
-- E3–E5 aus dem ursprünglichen Experimentplan (Datenaugmentation-Vergleich, stärkere YOLO-Varianten, formale Robustheitstests) wurden nicht vollständig durchgeführt. Wetter-basierte Robustheitstests (Metriken pro Wetterlage) waren geplant, wurden aber nicht umgesetzt.
+- E4–E5 aus dem ursprünglichen Experimentplan (Datenaugmentation-Vergleich, stärkere YOLO-Varianten, formale Robustheitstests) wurden nicht vollständig durchgeführt. Wetter-basierte Robustheitstests (Metriken pro Wetterlage) waren geplant, wurden aber nicht umgesetzt.
 - Für E1 konnte keine Wetter-Aufschlüsselung (Sunny/Cloudy/Rainy) vorgenommen werden, da keine entsprechenden Metadaten vorlagen.
-- Der Data-Leakage-Check wurde bisher nur für E1 durchgeführt; die Prüfung für E2 (YOLO) ist in Arbeit (siehe Abschnitt 4.2).
+- Data-Leakage-Korrektur: E1 und E3 (YOLO) wurden mit GroupShuffleSplit bereinigt; E2 (YOLO Original) ist mit kontaminiertem Roboflow-Split dokumentiert (Vergleich siehe Abschnitt 4.2).
 - Der bereinigte E1-Split enthält nur 15–16 Tage in Val/Test — für eine statistisch robustere Aussage wäre eine Cross-Validation über mehrere Tages-Ziehungen wünschenswert.
 
 ## Fazit
@@ -185,5 +218,7 @@ Rohdaten: [`classification/results/leakage_diagnostic_mobilenet_v2.json`](classi
 **E1** (`classification/`): `config.py`, `utils.py`, `prepare_dataset.py`, `build_grouped_split.py`, `train.py`, `evaluate.py`, `compare.py`, `leakage_crosseval.py`, `leakage_diagnostic_train.py` — Details siehe [`classification/README.md`](classification/README.md)
 
 **E2** (`yolo/`): `baseline.py`, `train_yolo_mac.py`, `evaluate_yolo_mac.py` — Details siehe [`yolo/README.md`](yolo/README.md)
+
+**E3** (`yolo_without_leakage/`): `build_grouped_split_yolo.py` (COCO→YOLO mit GroupShuffleSplit), `pklot_yolo_colab.ipynb` (Colab Training mit T4 GPU), Training-Output in `pklot_yolo_training/` — Details siehe [`yolo_without_leakage/README.md`](yolo_without_leakage/README.md)
 
 **Software:** PyTorch, Ultralytics YOLOv8, scikit-learn, OpenCV, NumPy, Pandas
