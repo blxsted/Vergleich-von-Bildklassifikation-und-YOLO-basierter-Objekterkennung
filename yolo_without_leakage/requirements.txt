@@ -1,0 +1,19 @@
+# YOLOv8 Object Detection with GroupShuffleSplit
+# Training on Google Colab, dataset conversion on local Mac
+
+# Dataset Conversion (build_grouped_split_yolo.py)
+numpy>=1.21.0
+scikit-learn>=1.0.0
+tqdm>=4.60.0
+pillow>=8.0.0
+
+# Training & Inference (pklot_yolo_colab.ipynb)
+ultralytics>=8.0.0
+torch>=2.0.0
+torchvision>=0.15.0
+opencv-python>=4.5.0
+
+# Optional: Evaluation scripts
+pandas>=1.3.0
+matplotlib>=3.4.0
+seaborn>=0.11.0
