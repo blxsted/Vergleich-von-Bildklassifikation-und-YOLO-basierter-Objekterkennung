@@ -99,7 +99,7 @@ class PKLotYOLOConverter:
             coco_file = split_path / '_annotations.coco.json'
             
             if not coco_file.exists():
-                print(f"⚠️  {split}: {coco_file} nicht gefunden, übersprungen")
+                print(f" {split}: {coco_file} nicht gefunden, übersprungen")
                 continue
             
             print(f"\n📂 Verarbeite {split}/ ...")
@@ -128,7 +128,7 @@ class PKLotYOLOConverter:
                 # Extrahiere Datum
                 date = self.extract_date_from_filename(image_filename)
                 if not date:
-                    print(f"⚠️  Konnte kein Datum extrahieren aus: {image_filename}")
+                    print(f"Konnte kein Datum extrahieren aus: {image_filename}")
                     continue
                 
                 # Speichere Metadaten
@@ -146,7 +146,7 @@ class PKLotYOLOConverter:
                 self.all_images.append(image_data)
                 self.image_groups[date].append(image_data)
         
-        print(f"\n✅ Geladen: {len(self.all_images)} Bilder aus {len(self.image_groups)} verschiedenen Tagen")
+        print(f"\nGeladen: {len(self.all_images)} Bilder aus {len(self.image_groups)} verschiedenen Tagen")
         return self.all_images
     
     def perform_group_shuffle_split(self, test_size=0.15, val_size=0.15):
@@ -169,7 +169,7 @@ class PKLotYOLOConverter:
         
         indices = np.arange(len(self.all_images))
         
-        print(f"\n📊 Datensatz-Statistik:")
+        print(f"\n Datensatz-Statistik:")
         print(f"   - Bilder gesamt: {len(self.all_images)}")
         print(f"   - Eindeutige Tage: {len(unique_dates)}")
         print(f"   - Zeitspanne: {min(unique_dates)} bis {max(unique_dates)}")
@@ -235,11 +235,11 @@ class PKLotYOLOConverter:
         print(f"Train-Test Überlap: {len(train_test_overlap)} Tage")
         print(f"Val-Test Überlap: {len(val_test_overlap)} Tage")
         
-        assert len(train_val_overlap) == 0, f"❌ Train-Val Überlap: {train_val_overlap}"
-        assert len(train_test_overlap) == 0, f"❌ Train-Test Überlap: {train_test_overlap}"
-        assert len(val_test_overlap) == 0, f"❌ Val-Test Überlap: {val_test_overlap}"
+        assert len(train_val_overlap) == 0, f"Train-Val Überlap: {train_val_overlap}"
+        assert len(train_test_overlap) == 0, f"Train-Test Überlap: {train_test_overlap}"
+        assert len(val_test_overlap) == 0, f"Val-Test Überlap: {val_test_overlap}"
         
-        print("\n✅ Bestätigung: 0% Tages-Überlap zwischen allen Splits!")
+        print("\nBestätigung: 0% Tages-Überlap zwischen allen Splits!")
         
         return True
     
@@ -258,7 +258,7 @@ class PKLotYOLOConverter:
         split_stats = {}
         
         for split_name, split_images in splits_data.items():
-            print(f"\n📁 Verarbeite {split_name}/ ({len(split_images)} Bilder)...")
+            print(f"\nVerarbeite {split_name}/ ({len(split_images)} Bilder)...")
             
             images_count = 0
             labels_count = 0
@@ -301,7 +301,7 @@ class PKLotYOLOConverter:
                 'labels': labels_count
             }
         
-        print(f"\n✅ YOLO-Labels erstellt und kopiert")
+        print(f"\nYOLO-Labels erstellt und kopiert")
         return split_stats
     
     def validate_images_labels_match(self):
@@ -320,10 +320,10 @@ class PKLotYOLOConverter:
             missing_labels = image_files - label_files
             extra_labels = label_files - image_files
             
-            assert len(missing_labels) == 0, f"❌ {split}: {len(missing_labels)} Bilder ohne Labels"
-            assert len(extra_labels) == 0, f"❌ {split}: {len(extra_labels)} Label ohne Bilder"
+            assert len(missing_labels) == 0, f"{split}: {len(missing_labels)} Bilder ohne Labels"
+            assert len(extra_labels) == 0, f"{split}: {len(extra_labels)} Label ohne Bilder"
             
-            print(f"✅ {split}: {len(image_files)} Bilder = {len(label_files)} Labels")
+            print(f"{split}: {len(image_files)} Bilder = {len(label_files)} Labels")
         
         return True
     
@@ -361,7 +361,7 @@ description: |
         with open(yaml_path, 'w') as f:
             f.write(data_yaml_content)
         
-        print(f"✅ data.yaml erstellt: {yaml_path}")
+        print(f"data.yaml erstellt: {yaml_path}")
         return yaml_path
     
     def print_final_summary(self, splits_data):
@@ -370,7 +370,7 @@ description: |
         print("FINALE ZUSAMMENFASSUNG")
         print("="*70)
         
-        print(f"\n📊 Datensatz-Struktur:")
+        print(f"\nDatensatz-Struktur:")
         print(f"Output-Ordner: {self.output_path}")
         print(f"\nBilder und Labels pro Split:")
         
@@ -385,8 +385,8 @@ description: |
             print(f"    └─ Eindeutige Tage: {len(dates)}")
         
         print(f"\nGesamt eindeutige Tage: {len(all_dates)}")
-        print(f"\n✅ Tages-Überlap Validierung: BESTANDEN (0% Überlap)")
-        print(f"✅ Bilder-Labels Matching: BESTANDEN (100% Match)")
+        print(f"\nTages-Überlap Validierung: BESTANDEN (0% Überlap)")
+        print(f"Bilder-Labels Matching: BESTANDEN (100% Match)")
         
         print(f"\n📁 Neue Datensatz-Struktur:")
         print(f"   dataset_grouped_yolo/")
@@ -402,7 +402,7 @@ description: |
         print(f"   └─ data.yaml")
         
         print("\n" + "="*70)
-        print("✅ DATENSATZ ERFOLGREICH KONVERTIERT!")
+        print("DATENSATZ ERFOLGREICH KONVERTIERT!")
         print("="*70)
     
     def run(self):
@@ -429,10 +429,10 @@ description: |
             # Finale Zusammenfassung
             self.print_final_summary(splits_data)
             
-            print("\n🎉 Alles abgeschlossen! Ready für Google Colab!\n")
+            print("\nAlles abgeschlossen!\n")
             
         except Exception as e:
-            print(f"\n❌ FEHLER: {e}")
+            print(f"\nFEHLER: {e}")
             raise
 
 

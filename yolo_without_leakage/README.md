@@ -9,9 +9,9 @@ The baseline YOLO experiment (E2, see `yolo/`) uses standard train/val/test spli
 **Problem:** Without date-aware splitting, images from the same day can appear in both training and test sets → model "memorizes" patterns → artificially high test accuracy.
 
 **Solution:** This experiment (E3) uses **GroupShuffleSplit stratified by capture date** to guarantee:
-- ✅ **0% date overlap** between splits
-- ✅ All images from the same day stay together in one split
-- ✅ Fair, realistic evaluation
+-  **0% date overlap** between splits
+-  All images from the same day stay together in one split
+-  Fair, realistic evaluation
 
 ## Dataset
 
@@ -24,7 +24,7 @@ TRAIN:  8,706 images / 69 unique days (70%)
 VAL:    2,087 images / 16 unique days (15%)
 TEST:   1,623 images / 15 unique days (15%)
 
-✅ Zero date overlap across all splits
+ Zero date overlap across all splits
 ```
 
 ### Classes
@@ -157,8 +157,8 @@ All training parameters logged in `pklot_yolo_training/args.yaml`. To retrain wi
 |--------|---|---|
 | **Split method** | Standard Roboflow split | GroupShuffleSplit by date |
 | **Date overlap** | Unknown (likely yes) | **0% guaranteed** |
-| **Data leakage risk** | ⚠️ High | ✅ None |
-| **Expected accuracy** | Potentially inflated | ✅ Fair & realistic |
+| **Data leakage risk** |  High |  None |
+| **Expected accuracy** | Potentially inflated |  Fair & realistic |
 | **Use case** | Quick baseline | Production-ready |
 
 ## Generated Files (not version-controlled)
